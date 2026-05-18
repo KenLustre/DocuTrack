@@ -20,6 +20,36 @@
       return load(DOCS_KEY).filter(d => d.ownerId === userId);
     },
     
+    registerUser: function (data) {
+      var users = load(USERS_KEY);
+      var exists = users.find(function(u) { return u.email === data.email; });
+      if (exists) return { ok: false, message: 'An account with that email already exists.' };
+
+      var user = {
+        id:        'USR-' + Math.floor(1000 + Math.random() * 9000),
+        firstName: data.firstName,
+        lastName:  data.lastName,
+        email:     data.email,
+        password:  data.password,
+        avatar:    data.avatar || null,
+        phone:     '',
+        createdAt: Date.now()
+      };
+      users.push(user);
+      save(USERS_KEY, users);
+      save(SESSION_KEY, { id: user.id });
+      return { ok: true };
+    },
+
+    loginUser: function (email, password) {
+      var user = load(USERS_KEY).find(function(u) {
+        return u.email === email && u.password === password;
+      });
+      if (!user) return null;
+      save(SESSION_KEY, { id: user.id });
+      return user;
+    },
+
     addDoc: function (data, user) {
       var docs = load(DOCS_KEY);
       var doc = {
