@@ -10,29 +10,6 @@
 <script>
   if (!DMT.isLoggedIn()) { window.location.replace("login.html"); }
 </script>
-<style>
-  body.dark-mode {
-    --bg: #121212;
-    --white: #1e1e1e;
-    --text: #f3f4f6;
-    --border: #333333;
-    --muted: #9ca3af;
-    --gray-bg: #2d2d2d;
-  }
-  body.dark-mode .sidebar { border-right: 1px solid #333; }
-  body.dark-mode table tbody tr { border-bottom-color: #333; }
-  .btn-danger-hover:hover { background-color: var(--red); border-color: var(--red); color: #fff; }
-  .menu-toggle { display: none; background: none; border: none; color: var(--text); cursor: pointer; padding: 0; margin-right: 16px; }
-  .mobile-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; display: none; opacity: 0; transition: opacity 0.3s ease; }
-  .mobile-overlay.open { display: block; opacity: 1; }
-  @media (max-width: 768px) {
-    .menu-toggle { display: inline-flex; align-items: center; justify-content: center; }
-    .sidebar { position: fixed; top: 0; left: 0; bottom: 0; z-index: 1000; transform: translateX(-100%); transition: transform 0.3s ease; background: var(--white, #ffffff); width: 260px; box-shadow: 4px 0 10px rgba(0,0,0,0.1); }
-    .sidebar.open { transform: translateX(0); }
-    .stats-row { grid-template-columns: 1fr !important; gap: 16px; }
-    .dash-grid { grid-template-columns: 1fr !important; }
-  }
-</style>
 </head>
 <body>
 <div class="layout">
@@ -40,10 +17,8 @@
   
   <aside class="sidebar">
     <div class="sidebar-profile">
-      <div class="avatar-circle">
-        <span id="avatarInitials" style="font-size: 24px; font-weight: 800; color: #fff; letter-spacing: 1px;">U</span>
-      </div>
-      <p class="profile-name" id="navUserName">User</p>
+      <div class="avatar-circle"></div>
+      <p class="profile-name">—</p>
     </div>
     <nav class="sidebar-nav">
       <div style="font-size: 10.5px; font-weight: 700; color: rgba(255,255,255,0.4); padding: 12px 22px 6px; letter-spacing: 0.5px;">WORKSPACE</div>
