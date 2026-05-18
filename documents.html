@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DocuTrack — My Documents</title>
+<link rel="stylesheet" href="main.css">
+<script src="db.js"></script>
+<script>
+  if (!DMT.isLoggedIn()) { window.location.replace("login.html"); }
+</script>
+<style>
+  body.dark-mode { --bg: #121212; --white: #1e1e1e; --text: #f3f4f6; --border: #333333; --muted: #9ca3af; }
+  body.dark-mode .sidebar { border-right: 1px solid #333; }
+  body.dark-mode table tbody tr { border-bottom-color: #333; }
+</style>
+</head>
+<body>
+<div class="layout">
+  
+  <aside class="sidebar">
+    <div class="sidebar-profile">
+      <div class="avatar-circle">
+        <span class="avatar-label">NO IMAGE</span>
+      </div>
+      <p class="profile-name">—</p> 
+    </div>
+    <nav class="sidebar-nav">
+      <div style="font-size: 10.5px; font-weight: 700; color: rgba(255,255,255,0.4); padding: 12px 22px 6px; letter-spacing: 0.5px;">WORKSPACE</div>
+      <a href="index.html" class="nav-item">Dashboard</a>
+      <a href="documents.html" class="nav-item active">My Documents</a>
+      <div style="font-size: 10.5px; font-weight: 700; color: rgba(255,255,255,0.4); padding: 20px 22px 6px; letter-spacing: 0.5px;">ACCOUNT</div>
+      <a href="notifications.html" class="nav-item">Notifications</a>
+      <a href="preferences.html" class="nav-item">Preferences</a>
+    </nav>
+    <a href="#" class="signout">Sign Out</a>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-end;">
+      <div>
+        <h1 class="page-title">MY DOCUMENTS</h1>
+        <p class="page-sub" id="docCountLabel">Loading...</p>
+      </div>
+      <button class="btn-blue" onclick="document.getElementById('uploadModal').classList.add('open')">Upload New Document</button>
+    </div>
+
+    <div class="card">
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Title</th><th>Type</th><th>Date</th><th>Status</th></tr>
+        </thead>
+        <tbody id="userDocsTable"></tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<div class="modal-overlay" id="uploadModal">
+  <div class="modal">
+    <div class="modal-head"><h3>Submit New Document</h3></div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Document Title <span style="color:#dc2626">*</span></label>
+        <input type="text" id="docTitle" placeholder="Enter title...">
+      </div>
+      <div class="form-group">
+        <label>Type</label>
+        <select id="docType">
+          <option>Form</option><option>Letter</option><option>Report</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-outline" onclick="document.getElementById('uploadModal').classList.remove('open')">Cancel</button>
+      <button class="btn-blue" id="submitBtn">Submit to Routing</button>
+    </div>
+  </div>
+</div>
+
+<script src="utils.js"></script>
+<script src="profile.js"></script> <script>
+  function renderMyDocs() {
+    var user = DMT.getCurrentUser();
+    var myDocs = DMT.getUserDocs(user.id);
+    var tbody = document.getElementById('userDocsTable');
+    
+    document.getElementById('docCountLabel').textContent = `Total: ${myDocs.length} documents`;
+
+    tbody.innerHTML = myDocs.length ? myDocs.map(d => `
+      <tr>
+        <td class="mono">${d.id}</td>
+        <td style="font-weight:600;">${d.name}</td>
+        <td>${d.type}</td>
+        <td>${d.date}</td>
+        <td><span class="badge badge-pending">${d.status}</span></td>
+      </tr>
+    `).join('') : '<tr><td colspan="5" class="empty-state">No documents found.</td></tr>';
+  }
+  document.getElementById('submitBtn').onclick = function() {
+    var titleInput = document.getElementById('docTitle');
+    var user = DMT.getCurrentUser();
+
+    if (!titleInput.value.trim()) {
+      alert("Document Title is required.");
+      titleInput.focus();
+      return; 
+    }
+
+    DMT.addDoc({ title: titleInput.value.trim(), type: document.getElementById('docType').value }, user);
+    document.getElementById('uploadModal').classList.remove('open');
+    titleInput.value = '';
+    renderMyDocs();
+  };
+
+  document.addEventListener('DOMContentLoaded', renderMyDocs);
+</script>
+</body>
+</html>

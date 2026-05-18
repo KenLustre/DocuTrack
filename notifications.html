@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DocuTrack — Notifications</title>
+<link rel="stylesheet" href="main.css">
+<script src="db.js"></script>
+<script>
+  if (!DMT.isLoggedIn()) { window.location.replace("login.html"); }
+</script>
+<style>
+  body.dark-mode { --bg: #121212; --white: #1e1e1e; --text: #f3f4f6; --border: #333333; --muted: #9ca3af; }
+  body.dark-mode .sidebar { border-right: 1px solid #333; }
+  
+  .notif-card { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; gap: 16px; align-items: flex-start; }
+  .notif-card:last-child { border-bottom: none; }
+  body.dark-mode .notif-card { border-bottom-color: #333; }
+  
+  .notif-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .icon-blue { background: #dbeafe; color: #1d4ed8; }
+  .icon-green { background: #dcfce7; color: #15803d; }
+  .icon-red { background: #fee2e2; color: #dc2626; }
+  .icon-gray { background: #f3f4f6; color: #374151; }
+
+  .notif-content { flex: 1; }
+  .notif-title { font-size: 13.5px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .notif-desc { font-size: 12.5px; color: var(--muted); line-height: 1.4; }
+  .notif-time { font-size: 11px; color: var(--muted); margin-top: 6px; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="layout">
+  
+  <aside class="sidebar">
+    <div class="sidebar-profile">
+      <div class="avatar-circle"><span id="sidebarInitials" style="font-size: 24px; font-weight: 800; color: #fff;">U</span></div>
+      <p class="profile-name" id="sidebarName">User</p>
+    </div>
+    <nav class="sidebar-nav">
+      <div style="font-size: 10.5px; font-weight: 700; color: rgba(255,255,255,0.4); padding: 12px 22px 6px; letter-spacing: 0.5px;">WORKSPACE</div>
+      <a href="index.html" class="nav-item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> Dashboard</a>
+      <a href="documents.html" class="nav-item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> My Documents</a>
+
+      <div style="font-size: 10.5px; font-weight: 700; color: rgba(255,255,255,0.4); padding: 20px 22px 6px; letter-spacing: 0.5px;">ACCOUNT</div>
+      <a href="notifications.html" class="nav-item active"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> Notifications</a>
+      <a href="preferences.html" class="nav-item"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Preferences</a>
+    </nav>
+    <a href="#" class="signout" onclick="DMT.logoutUser(); window.location='login.html';"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Sign Out</a>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <h1 class="page-title">NOTIFICATIONS</h1>
+      <p class="page-sub">Alerts and updates regarding your documents.</p>
+    </div>
+
+    <div class="card" style="padding: 0;">
+      <div id="notifContainer">
+        </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var user = DMT.getCurrentUser();
+    document.getElementById('sidebarName').textContent = user.firstName + ' ' + user.lastName;
+    document.getElementById('sidebarInitials').textContent = (user.firstName.charAt(0) + user.lastName.charAt(0)).toUpperCase();
+    if (localStorage.getItem('dmt_theme') === 'dark') document.body.classList.add('dark-mode');
+
+    var allLogs = JSON.parse(localStorage.getItem('dmt_logs') || '[]');
+    var myLogs = allLogs.filter(function(log) {
+      return log.email === user.email; 
+    });
+
+    var container = document.getElementById('notifContainer');
+
+    if (myLogs.length === 0) {
+      container.innerHTML = '<div class="empty-state" style="padding: 40px; text-align: center; color: var(--muted);">You have no new notifications.</div>';
+      return;
+    }
+
+    container.innerHTML = myLogs.map(function(log) {
+              var iconClass = 'icon-gray';
+      var iconSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+      
+      if (log.action === 'Created') { 
+        iconClass = 'icon-blue'; 
+        iconSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>';
+      }
+      if (log.action === 'Approved') { 
+        iconClass = 'icon-green'; 
+        iconSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+      }
+      if (log.action === 'Rejected') { 
+        iconClass = 'icon-red'; 
+        iconSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+      }
+
+      return `
+        <div class="notif-card">
+          <div class="notif-icon ${iconClass}">
+            ${iconSvg}
+          </div>
+          <div class="notif-content">
+            <div class="notif-title">Document ${log.action}: ${log.docId}</div>
+            <div class="notif-desc">${log.details}</div>
+            <div class="notif-time">${log.timestamp}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  });
+</script>
+</body>
+</html>

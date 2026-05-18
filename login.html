@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DocuTrack — Sign In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --red: #9b1c1c;
+  --red-dark: #7f1d1d;
+  --border: #e2e2e2;
+  --text: #111111;
+  --muted: #6b7280;
+  --font: 'Inter', sans-serif;
+}
+
+body {
+  font-family: var(--font);
+  background: #e8e8e8;
+  min-height: 100vh;
+  display: flex;
+  align-items: stretch;
+}
+
+.page {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.panel-left {
+  width: 420px;
+  flex-shrink: 0;
+  background: var(--red);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.panel-left::before {
+  content: '';
+  position: absolute;
+  top: -80px; right: -80px;
+  width: 300px; height: 300px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 50%;
+}
+.panel-left::after {
+  content: '';
+  position: absolute;
+  bottom: -100px; left: -60px;
+  width: 340px; height: 340px;
+  background: rgba(0,0,0,0.08);
+  border-radius: 50%;
+}
+
+.brand {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  color: #fff;
+}
+
+.brand-icon {
+  width: 72px; height: 72px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 22px;
+  border: 2px solid rgba(255,255,255,0.2);
+}
+
+.brand h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.brand p {
+  font-size: 14px;
+  opacity: 0.78;
+  line-height: 1.6;
+  max-width: 260px;
+  margin: 0 auto;
+}
+
+.brand-divider {
+  width: 40px; height: 2px;
+  background: rgba(255,255,255,0.35);
+  margin: 20px auto;
+  border-radius: 2px;
+}
+
+.brand-tagline {
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.panel-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 40px;
+}
+
+.form-card {
+  width: 100%;
+  max-width: 400px;
+}
+
+.form-card h2 {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--red);
+  margin-bottom: 6px;
+}
+
+.form-card .subtitle {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin-bottom: 32px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.field label {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.input-wrap {
+  position: relative;
+}
+
+.input-wrap svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+.input-wrap input {
+  width: 100%;
+  padding: 11px 12px 11px 38px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--font);
+  font-size: 14px;
+  color: var(--text);
+  background: #fff;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.input-wrap input:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(155,28,28,0.08);
+}
+
+.input-wrap input::placeholder { color: #c0c0c0; }
+
+.toggle-pw {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #9ca3af;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+}
+.toggle-pw:hover { color: var(--text); }
+
+.error-msg {
+  display: none;
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  border-radius: 7px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #dc2626;
+  margin-bottom: 16px;
+}
+.error-msg.show { display: block; }
+
+.btn-submit {
+  width: 100%;
+  padding: 12px;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 6px;
+  transition: background 0.15s, transform 0.1s;
+  letter-spacing: 0.3px;
+}
+.btn-submit:hover { background: var(--red-dark); }
+.btn-submit:active { transform: scale(0.99); }
+
+.alt-link {
+  text-align: center;
+  margin-top: 22px;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+.alt-link a {
+  color: var(--red);
+  font-weight: 700;
+  text-decoration: none;
+}
+.alt-link a:hover { text-decoration: underline; }
+
+@media (max-width: 700px) {
+  .panel-left { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="panel-left">
+    <div class="brand">
+      <div class="brand-icon">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+      </div>
+      <h1>DocuTrack</h1>
+      <div class="brand-divider"></div>
+      <p>Streamlined document routing and management for your organization.</p>
+      <div class="brand-divider"></div>
+      <div class="brand-tagline">LPU Document System</div>
+    </div>
+  </div>
+
+  <div class="panel-right">
+    <div class="form-card">
+      <h2>Welcome back</h2>
+      <p class="subtitle">Sign in to your DocuTrack account</p>
+
+      <div class="error-msg" id="errorMsg">Invalid email or password. Please try again.</div>
+
+      <div class="field">
+        <label>Email Address</label>
+        <div class="input-wrap">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <input type="email" id="loginEmail" placeholder="you@lpu.edu.ph" autocomplete="email">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <div class="input-wrap">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input type="password" id="loginPassword" placeholder="Enter your password" autocomplete="current-password">
+          <button class="toggle-pw" type="button" onclick="togglePw('loginPassword', this)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <button class="btn-submit" id="loginBtn">Sign In</button>
+
+      <div class="alt-link">
+        Don't have an account? <a href="signup.html">Create one</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="db.js"></script>
+<script>
+document.getElementById('loginBtn').addEventListener('click', doLogin);
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') doLogin();
+});
+
+function doLogin() {
+  var email = document.getElementById('loginEmail').value.trim();
+  var password = document.getElementById('loginPassword').value;
+  var err = document.getElementById('errorMsg');
+  err.classList.remove('show');
+
+  if (!email || !password) {
+    err.textContent = 'Please enter your email and password.';
+    err.classList.add('show');
+    return;
+  }
+
+  var user = DMT.loginUser(email, password);
+  if (!user) {
+    err.textContent = 'Invalid email or password. Please try again.';
+    err.classList.add('show');
+    return;
+  }
+
+  window.location.href = 'index.html';
+}
+
+function togglePw(id, btn) {
+  var input = document.getElementById(id);
+  input.type = input.type === 'password' ? 'text' : 'password';
+}
+</script>
+</body>
+</html>
