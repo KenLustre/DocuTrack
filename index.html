@@ -21,10 +21,22 @@
   }
   body.dark-mode .sidebar { border-right: 1px solid #333; }
   body.dark-mode table tbody tr { border-bottom-color: #333; }
+  .btn-danger-hover:hover { background-color: var(--red); border-color: var(--red); color: #fff; }
+  .menu-toggle { display: none; background: none; border: none; color: var(--text); cursor: pointer; padding: 0; margin-right: 16px; }
+  .mobile-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; display: none; opacity: 0; transition: opacity 0.3s ease; }
+  .mobile-overlay.open { display: block; opacity: 1; }
+  @media (max-width: 768px) {
+    .menu-toggle { display: inline-flex; align-items: center; justify-content: center; }
+    .sidebar { position: fixed; top: 0; left: 0; bottom: 0; z-index: 1000; transform: translateX(-100%); transition: transform 0.3s ease; background: var(--white, #ffffff); width: 260px; box-shadow: 4px 0 10px rgba(0,0,0,0.1); }
+    .sidebar.open { transform: translateX(0); }
+    .stats-row { grid-template-columns: 1fr !important; gap: 16px; }
+    .dash-grid { grid-template-columns: 1fr !important; }
+  }
 </style>
 </head>
 <body>
 <div class="layout">
+  <div class="mobile-overlay" id="mobileOverlay"></div>
   
   <aside class="sidebar">
     <div class="sidebar-profile">
@@ -54,7 +66,7 @@
         Preferences
       </a>
     </nav>
-    <a href="#" class="signout" onclick="DMT.logoutUser(); window.location='login.html';">
+    <a href="#" class="signout">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
       Sign Out
     </a>
@@ -62,9 +74,14 @@
 
   <main class="main-content">
     <div class="page-header">
-      <div>
-        <h1 class="page-title">MY DASHBOARD</h1>
-        <p class="page-sub">Welcome back. Here is your personal document summary.</p>
+      <div style="display: flex; align-items: center;">
+        <button id="menuToggle" class="menu-toggle">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div>
+          <h1 class="page-title">MY DASHBOARD</h1>
+          <p class="page-sub">Welcome back. Here is your personal document summary.</p>
+        </div>
       </div>
     </div>
 
@@ -114,6 +131,7 @@
   </main>
 </div>
 
+<script src="profile.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     var user = DMT.getCurrentUser();
@@ -122,9 +140,6 @@
     if (localStorage.getItem('dmt_theme') === 'dark') {
       document.body.classList.add('dark-mode');
     }
-
-    document.getElementById('navUserName').textContent = user.firstName + ' ' + user.lastName;
-    document.getElementById('avatarInitials').textContent = (user.firstName.charAt(0) + user.lastName.charAt(0)).toUpperCase();
 
     var myDocs = DMT.getUserDocs(user.id);
     

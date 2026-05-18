@@ -267,6 +267,7 @@ select {
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
 }
 .btn-outline:hover { border-color: #9ca3af; }
 

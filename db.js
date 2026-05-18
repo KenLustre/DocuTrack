@@ -68,6 +68,71 @@
       logs.unshift({ email: user.email, action: 'Created', docId: doc.id, details: `Uploaded ${doc.name}`, timestamp: new Date().toLocaleString() });
       save(LOGS_KEY, logs);
       return doc;
+    },
+
+    ui: {
+      _createModal: function(title, message, buttons) {
+        var existingModal = document.querySelector('.msg-modal-overlay');
+        if (existingModal) {
+          existingModal.remove();
+        }
+
+        var modalOverlay = document.createElement('div');
+        modalOverlay.className = 'modal-overlay msg-modal-overlay open';
+
+        var modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.style.maxWidth = '400px';
+        modal.style.textAlign = 'center';
+
+        var modalHead = document.createElement('div');
+        modalHead.className = 'modal-head';
+        var modalTitle = document.createElement('h3');
+        modalTitle.textContent = title;
+        modalHead.appendChild(modalTitle);
+
+        var modalBody = document.createElement('div');
+        modalBody.className = 'modal-body';
+        modalBody.style.padding = '8px 0 20px';
+        var modalMessage = document.createElement('p');
+        modalMessage.textContent = message;
+        modalMessage.style.fontSize = '14px';
+        modalMessage.style.color = 'var(--muted)';
+        modalMessage.style.lineHeight = '1.5';
+        modalBody.appendChild(modalMessage);
+
+        var modalFoot = document.createElement('div');
+        modalFoot.className = 'modal-foot';
+        modalFoot.style.display = 'flex';
+        modalFoot.style.justifyContent = 'center';
+        modalFoot.style.gap = '12px';
+        
+        buttons.forEach(function(btn) {
+          var buttonEl = document.createElement('button');
+          buttonEl.textContent = btn.text;
+          buttonEl.className = btn.class;
+          buttonEl.onclick = function() {
+            modalOverlay.remove();
+            if (btn.callback) btn.callback();
+          };
+          modalFoot.appendChild(buttonEl);
+        });
+
+        modal.appendChild(modalHead);
+        modal.appendChild(modalBody);
+        modal.appendChild(modalFoot);
+        modalOverlay.appendChild(modal);
+        document.body.appendChild(modalOverlay);
+      },
+      alert: function(message, title) {
+        this._createModal(title || 'Alert', message, [{ text: 'OK', class: 'btn-blue' }]);
+      },
+      confirm: function(message, title, onConfirm) {
+        this._createModal(title || 'Confirm', message, [
+          { text: 'Cancel', class: 'btn-outline', callback: function() { onConfirm(false); } },
+          { text: 'Confirm', class: 'btn-outline btn-danger-hover', callback: function() { onConfirm(true); } }
+        ]);
+      }
     }
   };
 })(window);
