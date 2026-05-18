@@ -1,3 +1,8 @@
+// Apply dark mode globally before anything else loads
+if (localStorage.getItem('dmt_theme') === 'dark') {
+  document.body.classList.add('dark-mode');
+}
+
 function updateSidebarUI(user) {
   if (!user) return;
   var fullName = user.firstName + ' ' + user.lastName;

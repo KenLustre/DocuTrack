@@ -73,7 +73,6 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     var user = DMT.getCurrentUser();
-    if (localStorage.getItem('dmt_theme') === 'dark') document.body.classList.add('dark-mode');
 
     var allLogs = JSON.parse(localStorage.getItem('dmt_logs') || '[]');
     var myLogs = allLogs.filter(function(log) {

@@ -112,10 +112,6 @@
     var user = DMT.getCurrentUser();
     if (!user) return;
 
-    if (localStorage.getItem('dmt_theme') === 'dark') {
-      document.body.classList.add('dark-mode');
-    }
-
     var myDocs = DMT.getUserDocs(user.id);
     
     document.getElementById('statTotal').textContent = myDocs.length;
