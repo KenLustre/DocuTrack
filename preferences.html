@@ -125,6 +125,9 @@
 
     var isDark = localStorage.getItem('dmt_theme') === 'dark';
     document.getElementById('toggleTheme').checked = isDark;
+
+    var pushNotifs = localStorage.getItem('dmt_pushNotifs');
+    document.getElementById('toggleNotifs').checked = (pushNotifs !== 'false');
   });
 
   function savePreferences() {
@@ -137,6 +140,10 @@
   users[idx].phone = document.getElementById('prefPhone').value.trim();
 
   localStorage.setItem('dmt_users', JSON.stringify(users));
+
+  var pushEnabled = document.getElementById('toggleNotifs').checked;
+  localStorage.setItem('dmt_pushNotifs', pushEnabled);
+
   DMT.ui.alert("Your preferences have been successfully saved.", "Profile Updated");
   
   updateSidebarUI(users[idx]);
