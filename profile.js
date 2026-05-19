@@ -1,4 +1,3 @@
-// Apply dark mode globally before anything else loads
 if (localStorage.getItem('dmt_theme') === 'dark') {
   document.body.classList.add('dark-mode');
 }
@@ -40,16 +39,32 @@ document.addEventListener('DOMContentLoaded', function () {
   if (signoutLink) {
     signoutLink.addEventListener('click', function (e) {
       e.preventDefault();
-      DMT.ui.confirm('Are you sure you want to sign out?', 'Confirm Sign Out', function(isConfirmed) {
-        if (isConfirmed) {
-          DMT.logoutUser();
-          window.location.href = 'login.html';
-        }
-      });
+      if (window.hasUnsavedChanges) {
+        DMT.ui._createModal('Unsaved Changes', 'You have unsaved changes. Do you want to save them before signing out?', [
+          { text: 'Cancel', class: 'btn-outline' },
+          { text: 'Discard & Sign Out', class: 'btn-outline btn-danger-hover', callback: function() { 
+            window.hasUnsavedChanges = false;
+            DMT.logoutUser();
+            window.location.href = 'login.html';
+          }},
+          { text: 'Save & Sign Out', class: 'btn-blue', callback: function() { 
+            if (typeof savePreferences === 'function') savePreferences();
+            window.hasUnsavedChanges = false;
+            DMT.logoutUser();
+            window.location.href = 'login.html';
+          }}
+        ]);
+      } else {
+        DMT.ui.confirm('Are you sure you want to sign out?', 'Confirm Sign Out', function(isConfirmed) {
+          if (isConfirmed) {
+            DMT.logoutUser();
+            window.location.href = 'login.html';
+          }
+        });
+      }
     });
   }
 
-  // Mobile Sidebar Toggle
   var menuToggle = document.getElementById('menuToggle');
   var sidebar = document.querySelector('.sidebar');
   var overlay = document.getElementById('mobileOverlay');

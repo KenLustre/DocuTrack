@@ -89,7 +89,7 @@
             <h3>App Settings</h3>
             <div class="toggle-wrap">
               <span class="toggle-label">Push Notifications</span>
-              <label class="switch"><input type="checkbox" id="toggleNotifs" checked><span class="slider"></span></label>
+              <label class="switch"><input type="checkbox" id="toggleNotifs" checked onchange="applyPushNotifs()"><span class="slider"></span></label>
             </div>
             <div class="toggle-wrap">
               <span class="toggle-label">Dark Mode</span>
@@ -128,6 +128,40 @@
 
     var pushNotifs = localStorage.getItem('dmt_pushNotifs');
     document.getElementById('toggleNotifs').checked = (pushNotifs !== 'false');
+
+    window.hasUnsavedChanges = false;
+    var formInputs = [
+      document.getElementById('prefFirstName'),
+      document.getElementById('prefLastName'),
+      document.getElementById('prefPhone')
+    ];
+    
+    formInputs.forEach(function(input) {
+      input.addEventListener('input', function() {
+        window.hasUnsavedChanges = true;
+      });
+    });
+
+    document.querySelectorAll('a.nav-item').forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        if (window.hasUnsavedChanges && !this.classList.contains('active')) {
+          e.preventDefault();
+          var targetHref = this.href;
+          DMT.ui._createModal('Unsaved Changes', 'You have unsaved changes to your profile. Do you want to save them before leaving?', [
+            { text: 'Cancel', class: 'btn-outline' },
+            { text: 'Discard', class: 'btn-outline btn-danger-hover', callback: function() { window.hasUnsavedChanges = false; window.location.href = targetHref; } },
+            { text: 'Save & Leave', class: 'btn-blue', callback: function() { savePreferences(); window.hasUnsavedChanges = false; window.location.href = targetHref; } }
+          ]);
+        }
+      });
+    });
+
+    window.addEventListener('beforeunload', function(e) {
+      if (window.hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    });
   });
 
   function savePreferences() {
@@ -142,10 +176,12 @@
   localStorage.setItem('dmt_users', JSON.stringify(users));
 
   var pushEnabled = document.getElementById('toggleNotifs').checked;
-  localStorage.setItem('dmt_pushNotifs', pushEnabled);
+  localStorage.setItem('dmt_pushNotifs', pushEnabled ? 'true' : 'false');
 
   DMT.ui.alert("Your preferences have been successfully saved.", "Profile Updated");
   
+  window.hasUnsavedChanges = false;
+
   updateSidebarUI(users[idx]);
 }
 

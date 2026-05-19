@@ -128,7 +128,7 @@
     renderMyDocs();
 
     var pushNotifs = localStorage.getItem('dmt_pushNotifs');
-    if (pushNotifs !== 'false') {
+    if (pushNotifs === 'true' || pushNotifs === null) {
       DMT.ui.toast("Approval Request", "Document '" + newDoc.name + "' is up for approval !", "success");
     }
   };
